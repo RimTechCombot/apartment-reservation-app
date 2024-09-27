@@ -1,4 +1,4 @@
 {% extends 'base.html' %}
 {%block content%}
-<p>Hello world!</p>
+<p>Hello {{request.user.first_name}}!</p>
 {%endblock%}
