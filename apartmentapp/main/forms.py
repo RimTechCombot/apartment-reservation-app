@@ -9,3 +9,10 @@ class AddVenueForm(ModelForm):
     class Meta:
         model = Venue
         fields = ["name", "description", "image"]
+
+
+class EditVenueForm(ModelForm):
+
+    class Meta:
+        model = Venue
+        fields = ["name", "description", "image"]
