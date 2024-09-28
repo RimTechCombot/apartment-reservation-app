@@ -48,3 +48,11 @@ def edit_venue(request, id):
             return render(request, "edit_venue.html", {"form": form})
     form = EditVenueForm(initial=model_to_dict(venue))
     return render(request, "edit_venue.html", {"venue": venue, "form": form})
+
+
+def my_venues(request):
+    if request.method == "POST":
+        if request.POST.get("Edit Venue"):
+            return redirect(f"/edit-venue/{request.POST['Edit Venue']}")
+    venues = Venue.objects.filter(owner=request.user)
+    return render(request, "my_venues.html", {"venues": venues})
