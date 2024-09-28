@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{%block content%}
+{%for venue in venues%}
+<p>{{venue.name}}</p></br>
+<img src="{{venue.image.url}}" alt="{{venue.name}}" width="350px" height="350px"></br>
+<p>{{venue.description}}</p>
+{%if request.user == venue.owner%}
+<form method="POST" class="form-group">
+    {% csrf_token %}
+    {{form|crispy}}
+    <button type="submit" value="{{venue.id}}" name="Edit Venue" >Edit</button>
+{%endif%}
+{%endfor%}
+{%endblock%}
