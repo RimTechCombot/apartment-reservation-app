@@ -56,3 +56,9 @@ def my_venues(request):
             return redirect(f"/edit-venue/{request.POST['Edit Venue']}")
     venues = Venue.objects.filter(owner=request.user)
     return render(request, "my_venues.html", {"venues": venues})
+
+
+def venue(request, id):
+    venue = Venue.objects.get(id=id)
+    return render(request, "venue.html", {"venue": venue})
+

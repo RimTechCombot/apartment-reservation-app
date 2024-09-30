@@ -4,7 +4,9 @@
     {%if venues%}
         {%for venue in venues%}
             <p>{{venue.name}}</p></br>
-            <img src="{{venue.image.url}}" alt="{{venue.name}}" width="350px" height="350px"></br>
+            <a href="{% url 'venue' venue.id %}">
+                <img src="{{venue.image.url}}" alt="{{venue.name}}" width="350px" height="350px"></br>
+            </a>
             <p>{{venue.description}}</p>
             {%if request.user == venue.owner%}
                 <form method="POST" class="form-group">

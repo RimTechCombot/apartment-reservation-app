@@ -10,4 +10,11 @@ class Venue(models.Model):
     name = models.TextField(max_length=50)
     image = models.ImageField(upload_to='media')
     description = models.TextField(max_length=200)
+    is_active = models.BooleanField()
+    price = models.IntegerField()
 
+
+class VenueImage(models.Model):
+
+    venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media')
