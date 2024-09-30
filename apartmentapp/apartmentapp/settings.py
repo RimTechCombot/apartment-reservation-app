@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'main',
     'register',
+    'django_unused_media',
     'crispy_bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
