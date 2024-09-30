@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import AddVenueForm, EditVenueForm
-from .models import Venue
+from .forms import AddVenueForm, EditVenueForm, AddImageForm, EditImageForm
+from .models import Venue, VenueImage
 from django.forms.models import model_to_dict
 
 
@@ -59,6 +59,28 @@ def my_venues(request):
 
 
 def venue(request, id):
+    if request.method == "POST":
+        if request.POST.get("Edit Venue"):
+            return redirect(f"/edit-venue/{request.POST['Edit Venue']}")
+        elif request.POST.get("Add Images"):
+            return redirect(f"/venue/{request.POST['Add Images']}/add-images")
     venue = Venue.objects.get(id=id)
-    return render(request, "venue.html", {"venue": venue})
+    venue_images = VenueImage.objects.filter(venue=id)
+    return render(request, "venue.html", {"venue": venue, "venue_images": venue_images})
 
+
+def add_images(request, id):
+    venue = Venue.objects.get(id=id)
+    if request.method == "POST":
+        form = AddImageForm(request.POST, request.FILES)
+        print(request.POST, request.FILES)
+        if form.is_valid():
+            for image in request.FILES.getlist('image'):
+                print(image)
+                image_obj = VenueImage(venue=venue, image=image)
+                image_obj.save()
+            return redirect(f"/venue/{id}")
+        else:
+            return render(request, "add_images.html", {"form": form, "venue": venue})
+    form = AddImageForm()
+    return render(request, "add_images.html", {"form": form, "venue": venue})

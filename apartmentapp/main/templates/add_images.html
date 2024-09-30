@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{%block content%}
+	{%if request.user == venue.owner%}
+		<div class="mx-auto" style="width: 25rem;">
+			<form method="POST" class="form-group" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form | crispy }}
+			<button type="submit" class="btn btn-success">Add Venue</button>
+			</form>
+		</div>
+	{%else%}
+		<p>You do not have permission to edit this venue.</p>
+	{%endif%}
+{%endblock%}

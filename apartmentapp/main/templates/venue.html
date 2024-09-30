@@ -12,7 +12,11 @@
                 {% csrf_token %}
                 {{form|crispy}}
                 <button type="submit" value="{{venue.id}}" name="Edit Venue" >Edit</button>
+                <button type="submit" value="{{venue.id}}" name="Add Images" >Add images</button>
         {%endif%}
+        {%for venue_image in venue_images%}
+                <img src="{{venue_image.image.url}}" alt="{{venue_image}}" width="250px" height="250px"></br>
+        {%endfor%}
 
     {%else%}
         <p>Venue doesn't exist.</p>
