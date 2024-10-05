@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{%block content%}
+    {%if venue_image%}
+
+        <img src="{{venue_image.image.url}}" alt="{{venue.name}}" width="350px" height="350px"></br>
+
+
+        {%if request.user == venue_image.venue.owner%}
+            <form method="POST" class="form-group">
+                {% csrf_token %}
+                {{form|crispy}}
+                <button type="submit" value="{{venue_image.id}}" name="Edit VenueImage" >Edit</button>
+                <button type="submit" value="{{venue_image.id}}" name="Delete Image" >Delete</button>
+        {%endif%}
+
+    {%else%}
+        <p>Venue image doesn't exist.</p>
+    {%endif%}
+{%endblock%}

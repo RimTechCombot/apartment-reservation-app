@@ -15,7 +15,9 @@
                 <button type="submit" value="{{venue.id}}" name="Add Images" >Add images</button>
         {%endif%}
         {%for venue_image in venue_images%}
+            <a href="{% url 'venue-image' venue.id venue_image.id %}">
                 <img src="{{venue_image.image.url}}" alt="{{venue_image}}" width="250px" height="250px"></br>
+            </a>
         {%endfor%}
 
     {%else%}

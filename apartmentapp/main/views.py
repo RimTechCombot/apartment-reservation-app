@@ -28,7 +28,9 @@ def list_venue(request):
     if request.method == "POST":
         if request.POST.get("Edit Venue"):
             return redirect(f"/edit-venue/{request.POST['Edit Venue']}")
-
+        if request.POST.get("Delete Venue"):
+            Venue.objects.filter(id=request.POST["Delete Venue"]).delete()
+            return redirect("/list-venue")
     venues = Venue.objects.all()
     return render(request, "list_venue.html", {"venues": venues})
 
@@ -37,7 +39,6 @@ def edit_venue(request, id):
     venue = Venue.objects.get(id=id)
     if request.method == "POST":
         form = EditVenueForm(request.POST, request.FILES, instance=venue)
-        print(request.POST, request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = request.user
@@ -54,6 +55,9 @@ def my_venues(request):
     if request.method == "POST":
         if request.POST.get("Edit Venue"):
             return redirect(f"/edit-venue/{request.POST['Edit Venue']}")
+        if request.POST.get("Delete Venue"):
+            Venue.objects.filter(id=request.POST["Delete Venue"]).delete()
+            return redirect("/list-venue")
     venues = Venue.objects.filter(owner=request.user)
     return render(request, "my_venues.html", {"venues": venues})
 
@@ -73,10 +77,8 @@ def add_images(request, id):
     venue = Venue.objects.get(id=id)
     if request.method == "POST":
         form = AddImageForm(request.POST, request.FILES)
-        print(request.POST, request.FILES)
         if form.is_valid():
             for image in request.FILES.getlist('image'):
-                print(image)
                 image_obj = VenueImage(venue=venue, image=image)
                 image_obj.save()
             return redirect(f"/venue/{id}")
@@ -84,3 +86,29 @@ def add_images(request, id):
             return render(request, "add_images.html", {"form": form, "venue": venue})
     form = AddImageForm()
     return render(request, "add_images.html", {"form": form, "venue": venue})
+
+
+def venue_image(request, id, vi_id):
+    venue_image = VenueImage.objects.get(id=vi_id)
+    if request.method == "POST":
+        if request.POST.get("Edit VenueImage"):
+            return redirect(f"/venue/{id}/edit-image/{vi_id}")
+        elif request.POST.get("Delete Image"):
+            venue_image.delete()
+            return redirect(f"/venue/{id}")
+    return render(request, "venue_image.html", {"venue_image": venue_image})
+
+
+def edit_venue_image(request, id, vi_id):
+    venue_image = VenueImage.objects.get(id=vi_id)
+    if request.method == "POST":
+        form = EditImageForm(request.POST, request.FILES, instance=venue_image)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.image = form.cleaned_data["image"]
+            obj.save()
+            return redirect(f"/venue/{id}")
+        else:
+            return render(request, "edit_venue_image.html", {"form": form})
+    form = EditImageForm(initial=model_to_dict(venue_image))
+    return render(request, "edit_venue_image.html", {"venue_image": venue_image, "form": form})
