@@ -12,4 +12,6 @@ urlpatterns = [
     path('venue/<int:id>/add-images', views.add_images, name='add-images'),
     path('venue/<int:id>/venue-image/<int:vi_id>', views.venue_image, name='venue-image'),
     path('venue/<int:id>/edit-image/<int:vi_id>', views.edit_venue_image, name='edit-image'),
+    path('venue/<int:id>/review', views.review, name='review'),
+    path('venue/<int:id>/review/<int:r_id>/edit', views.edit_review, name='edit-review'),
 ]

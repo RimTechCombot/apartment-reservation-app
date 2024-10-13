@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, Form, FileField
 from django.contrib.auth.models import User
-from .models import Venue, VenueImage
+from .models import Venue, VenueImage, Review
 
 
 class AddVenueForm(ModelForm):
@@ -50,3 +50,17 @@ class EditImageForm(ModelForm):
     class Meta:
         model = VenueImage
         fields = ["image"]
+
+
+class AddReviewForm(ModelForm):
+
+    class Meta:
+        model = Review
+        fields = ["review", "rating"]
+
+
+class EditReviewForm(ModelForm):
+
+    class Meta:
+        model = Review
+        fields = ["review", "rating"]

@@ -14,13 +14,32 @@
                 <button type="submit" value="{{venue.id}}" name="Edit Venue" >Edit</button>
                 <button type="submit" value="{{venue.id}}" name="Add Images" >Add images</button>
         {%endif%}
+        {%if request.user != venue.owner and review_flag and request.user.is_authenticated%}
+            <form method="POST" class="form-group">
+                {% csrf_token %}
+                <button type="submit" value="{{venue.id}}" name="Review" >Review</button>
+        {%endif%}
         {%for venue_image in venue_images%}
             <a href="{% url 'venue-image' venue.id venue_image.id %}">
                 <img src="{{venue_image.image.url}}" alt="{{venue_image}}" width="250px" height="250px"></br>
             </a>
         {%endfor%}
-
+        <hr>
+        <h3>Reviews:</h3>
+        <br>
+        {%for review in reviews%}
+                <p>User {{review.owner.username}} wrote:</p>
+                <p>{{review.review}}</p>
+                <p>Rating: {{review.rating}}</p>
+                {%if request.user == review.owner%}
+                    <form method="POST" class="form-group">
+                        {% csrf_token %}
+                        <button type="submit" value="{{review.id}}" name="Edit Review" >Edit Review</button>
+                        <button type="submit" value="{{review.id}}" name="Delete Review" >Delete Review</button>
+                {%endif%}
+        {%endfor%}
     {%else%}
         <p>Venue doesn't exist.</p>
     {%endif%}
+
 {%endblock%}

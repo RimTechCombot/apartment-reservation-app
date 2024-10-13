@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import AddVenueForm, EditVenueForm, AddImageForm, EditImageForm
-from .models import Venue, VenueImage
+from .forms import AddVenueForm, EditVenueForm, AddImageForm, EditImageForm, AddReviewForm, EditReviewForm
+from .models import Venue, VenueImage, Review
 from django.forms.models import model_to_dict
 
 
@@ -68,9 +68,19 @@ def venue(request, id):
             return redirect(f"/edit-venue/{request.POST['Edit Venue']}")
         elif request.POST.get("Add Images"):
             return redirect(f"/venue/{request.POST['Add Images']}/add-images")
+        elif request.POST.get("Review"):
+            return redirect(f"/venue/{id}/review")
+        elif request.POST.get("Edit Review"):
+            return redirect(f"/venue/{id}/review/{request.POST['Edit Review']}/edit")
+        elif request.POST.get("Delete Review"):
+            Review.objects.get(id=request.POST['Delete Review']).delete()
+    review_flag = True
+    if Review.objects.filter(venue=id, owner=request.user.id):
+        review_flag = False
+    reviews = Review.objects.filter(venue=id)
     venue = Venue.objects.get(id=id)
     venue_images = VenueImage.objects.filter(venue=id)
-    return render(request, "venue.html", {"venue": venue, "venue_images": venue_images})
+    return render(request, "venue.html", {"venue": venue, "venue_images": venue_images, "reviews": reviews, "review_flag": review_flag})
 
 
 def add_images(request, id):
@@ -112,3 +122,33 @@ def edit_venue_image(request, id, vi_id):
             return render(request, "edit_venue_image.html", {"form": form})
     form = EditImageForm(initial=model_to_dict(venue_image))
     return render(request, "edit_venue_image.html", {"venue_image": venue_image, "form": form})
+
+
+def review(request, id):
+    if request.method == "POST":
+        form = AddReviewForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.owner = request.user
+            obj.venue = Venue.objects.get(id=id)
+            obj.review = form.cleaned_data["review"]
+            obj.rating = form.cleaned_data["rating"]
+            obj.save()
+            return redirect(f"/venue/{id}")
+        else:
+            return render(request, "add_review.html", {"form": form})
+    form = AddReviewForm()
+    return render(request, "add_review.html", {"form": form})
+
+
+def edit_review(request, id, r_id):
+    review = Review.objects.get(id=r_id)
+    if request.method == "POST":
+        form = EditReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect(f"/venue/{id}")
+        else:
+            return render(request, "edit_review.html", {"form": form})
+    form = EditReviewForm(initial=model_to_dict(review))
+    return render(request, "edit_review.html", {"review": review, "form": form})

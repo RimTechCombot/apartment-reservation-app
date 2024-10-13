@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 # Create your models here.
+RATING_CHOICES = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5)
+)
 
 
 class Venue(models.Model):
@@ -18,3 +25,11 @@ class VenueImage(models.Model):
 
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media')
+
+
+class Review(models.Model):
+
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
+    review = models.TextField(max_length=200)
+    rating = models.IntegerField(choices=RATING_CHOICES)
